@@ -1,60 +1,117 @@
 package dao;
 
 import model.SinhVien;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SinhVienDAO {
-    // Danh sách lưu trữ sinh viên tạm thời (thay thế cho Database)
-    private List<SinhVien> danhSachSV;
 
-    public SinhVienDAO() {
-        danhSachSV = new ArrayList<>();
-        // Thêm vài dữ liệu mẫu
-        danhSachSV.add(new SinhVien("SV001", "Nguyễn Văn A", 20, "a@example.com"));
-        danhSachSV.add(new SinhVien("SV002", "Trần Thị B", 21, "b@example.com"));
-    }
+    public static ArrayList<SinhVien> selectAll() {
+        ArrayList<SinhVien> ketQua = new ArrayList<>();
+        try (Connection c = ConnectDB.getConnection()) {
+            String sql = "SELECT * FROM SinhVien";
+            PreparedStatement pst = c.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
 
-    // Phương thức Lấy tất cả
-    public List<SinhVien> layTatCaSinhVien() {
-        return danhSachSV;
-    }
+            while (rs.next()) {
+                String ma = rs.getString("maSV");
+                String ten = rs.getString("tenSV");
+                int tuoi = rs.getInt("tuoi");
+                String email = rs.getString("email");
+                
+                double dJava = rs.getDouble("diemJava");
+                double dHTML = rs.getDouble("diemHTML");
+                double dCSS = rs.getDouble("diemCSS");
 
-    // Phương thức Thêm
-    public boolean themSinhVien(SinhVien sv) {
-        // Kiểm tra trùng mã SV (ví dụ)
-        for (SinhVien s : danhSachSV) {
-            if (s.getMaSV().equals(sv.getMaSV())) {
-                return false; // Mã SV đã tồn tại
+                SinhVien sv = new SinhVien(ma, ten, tuoi, email, dJava, dHTML, dCSS);
+                ketQua.add(sv);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        danhSachSV.add(sv);
-        return true;
+        return ketQua;
     }
 
-    // Phương thức Xóa theo mã SV
-    public boolean xoaSinhVien(String maSV) {
-        return danhSachSV.removeIf(sv -> sv.getMaSV().equals(maSV));
+    public static int insert(SinhVien sv) {
+        int ketQua = 0;
+        try (Connection c = ConnectDB.getConnection()) {
+            
+            String sql = "INSERT INTO SinhVien (maSV, tenSV, tuoi, email, diemJava, diemHTML, diemCSS) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement pst = c.prepareStatement(sql);
+            
+            pst.setString(1, sv.getMaSV());
+            pst.setString(2, sv.getTenSV());
+            pst.setInt(3, sv.getTuoi());
+            pst.setString(4, sv.getEmail());
+            
+            pst.setDouble(5, sv.getDiemJava());
+            pst.setDouble(6, sv.getDiemHTML());
+            pst.setDouble(7, sv.getDiemCSS());
+            
+            ketQua = pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ketQua;
     }
 
-    // Phương thức Cập nhật
-    public boolean capNhatSinhVien(SinhVien svMoi) {
-        for (int i = 0; i < danhSachSV.size(); i++) {
-            if (danhSachSV.get(i).getMaSV().equals(svMoi.getMaSV())) {
-                danhSachSV.set(i, svMoi);
-                return true;
-            }
+    public static int update(SinhVien sv) {
+        int ketQua = 0;
+        try (Connection c = ConnectDB.getConnection()) {
+            
+            String sql = "UPDATE SinhVien SET tenSV=?, tuoi=?, email=?, diemJava=?, diemHTML=?, diemCSS=? WHERE maSV=?";
+            PreparedStatement pst = c.prepareStatement(sql);
+            
+            pst.setString(1, sv.getTenSV());
+            pst.setInt(2, sv.getTuoi());
+            pst.setString(3, sv.getEmail());
+            pst.setDouble(4, sv.getDiemJava());
+            pst.setDouble(5, sv.getDiemHTML());
+            pst.setDouble(6, sv.getDiemCSS());
+            pst.setString(7, sv.getMaSV()); 
+            
+            ketQua = pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return false;
+        return ketQua;
     }
-    
-    // Phương thức Tìm kiếm theo Mã SV
-    public SinhVien timKiemTheoMa(String maSV) {
-        for (SinhVien sv : danhSachSV) {
-            if (sv.getMaSV().equals(maSV)) {
-                return sv;
-            }
+
+    public static int delete(String maSV) {
+        int ketQua = 0;
+        try (Connection c = ConnectDB.getConnection()) {
+            String sql = "DELETE FROM SinhVien WHERE maSV = ?";
+            PreparedStatement pst = c.prepareStatement(sql);
+            pst.setString(1, maSV);
+            ketQua = pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+        return ketQua;
+    }
+    public static SinhVien getSinhVienById(String maSV) {
+        SinhVien sv = null;
+        try (Connection c = ConnectDB.getConnection()) {
+            String sql = "SELECT * FROM SinhVien WHERE maSV = ?";
+            PreparedStatement pst = c.prepareStatement(sql);
+            pst.setString(1, maSV);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                String ten = rs.getString("tenSV");
+                int tuoi = rs.getInt("tuoi");
+                String email = rs.getString("email");
+                double dJava = rs.getDouble("diemJava");
+                double dHTML = rs.getDouble("diemHTML");
+                double dCSS = rs.getDouble("diemCSS");
+                sv = new SinhVien(maSV, ten, tuoi, email, dJava, dHTML, dCSS);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sv;
     }
 }

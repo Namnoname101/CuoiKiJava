@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class ConnectDB {
     
-    // ⚠️ CHỈNH SỬA CÁC THÔNG SỐ NÀY
+    
     private static  String DB_URL = "jdbc:mysql://localhost:3306/quanlisinhvien"; 
     private static  String USER = "root";              
-    private static String PASS = "0120465126Az";     
+    private static String PASS = "";     
     
  
     static {
@@ -21,7 +21,7 @@ public class ConnectDB {
             e.printStackTrace();
         }
     }
-    // END: THÊM KHỐI CODE NÀY
+    
 
     public static Connection getConnection() {
         Connection connection = null;
@@ -36,5 +36,23 @@ public class ConnectDB {
         return connection;
     }
     
-    // ... (Thêm hàm closeConnection nếu chưa có) ...
+    public static void main(String[] args) {
+        System.out.println("Đang kiểm tra kết nối...");
+        
+        Connection c = getConnection();
+        
+        if (c != null) {
+            System.out.println("✅ KẾT NỐI THÀNH CÔNG! (Database đã hoạt động)");
+            try {
+                c.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("❌ KẾT NỐI THẤT BẠI! (Kiểm tra lại XAMPP hoặc Password)");
+        }
+    }
+    
+    
+    
 }
