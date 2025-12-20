@@ -1,0 +1,19 @@
+# Bỏ qua các file biên dịch
+*.class
+
+# Bỏ qua thư mục biên dịch mặc định
+bin/
+out/
+build/
+
+# Bỏ qua các file cài đặt của IDE (Eclipse/IntelliJ/VSCode)
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+.vscode/
+
+# Bỏ qua các file hệ thống
+.DS_Store
+Thumbs.db
