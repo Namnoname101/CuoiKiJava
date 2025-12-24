@@ -5,7 +5,6 @@ import model.SinhVien;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class StudentViewGUI extends JFrame {
@@ -20,24 +19,24 @@ public class StudentViewGUI extends JFrame {
     }
 
     private void initGUI() {
-        setTitle("Kết quả học tập sinh viên");
+        setTitle("Cổng Thông Tin Sinh Viên");
         setSize(500, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.WHITE);
 
-        
+        // Header
         JPanel pHeader = new JPanel();
-        pHeader.setBackground(new Color(41, 128, 185)); 
-        JLabel lbl = new JLabel("Kết quả học tập sinh viên");
+        pHeader.setBackground(new Color(41, 128, 185));
+        JLabel lbl = new JLabel("BẢNG ĐIỂM CÁ NHÂN");
         lbl.setFont(new Font("Arial", Font.BOLD, 20));
         lbl.setForeground(Color.WHITE);
         lbl.setBorder(new EmptyBorder(15, 0, 15, 0));
         pHeader.add(lbl);
         add(pHeader, BorderLayout.NORTH);
 
-        
+        // Content
         SinhVien sv = SinhVienDAO.getSinhVienById(currentMaSV);
         
         JPanel pContent = new JPanel(new GridBagLayout());
@@ -49,49 +48,45 @@ public class StudentViewGUI extends JFrame {
             g.fill = GridBagConstraints.HORIZONTAL;
             g.weightx = 1.0;
 
-            
-            addInfoRow(pContent, g, 0, "Mã số sinh viên:", sv.getMaSV());
-            addInfoRow(pContent, g, 1, "Họ tên:", sv.getTenSV());
+            addInfoRow(pContent, g, 0, "Mã Sinh Viên:", sv.getMaSV());
+            addInfoRow(pContent, g, 1, "Họ và Tên:", sv.getTenSV());
             addInfoRow(pContent, g, 2, "Tuổi:", sv.getTuoi() + "");
             addInfoRow(pContent, g, 3, "Email:", sv.getEmail());
 
-            
             JSeparator sep = new JSeparator();
             g.gridx = 0; g.gridy = 4; g.gridwidth = 2;
             pContent.add(sep, g);
             g.gridwidth = 1;
 
-            
-            addInfoRow(pContent, g, 5, "Java Programming:", sv.getDiemJava() + "");
-            addInfoRow(pContent, g, 6, "HTML & Web Design:", sv.getDiemHTML() + "");
-            addInfoRow(pContent, g, 7, "CSS Styling:", sv.getDiemCSS() + "");
+            addInfoRow(pContent, g, 5, "Lập trình Java:", sv.getDiemJava() + "");
+            addInfoRow(pContent, g, 6, "Thiết kế Web (HTML):", sv.getDiemHTML() + "");
+            addInfoRow(pContent, g, 7, "Trang trí Web (CSS):", sv.getDiemCSS() + "");
 
-            
-            JLabel lblGPA = new JLabel("GPA (4.0): " + sv.getGPA());
+            JLabel lblGPA = new JLabel("Điểm GPA (Hệ 4): " + sv.getGPA());
             lblGPA.setFont(new Font("Arial", Font.BOLD, 22));
-            lblGPA.setForeground(new Color(192, 57, 43)); 
+            lblGPA.setForeground(new Color(192, 57, 43));
             g.gridx = 0; g.gridy = 8; g.gridwidth = 2;
             g.insets = new Insets(30, 20, 5, 20);
             lblGPA.setHorizontalAlignment(SwingConstants.CENTER);
             pContent.add(lblGPA, g);
 
-            JLabel lblRank = new JLabel("Học lực: " + sv.getXepLoai());
+            JLabel lblRank = new JLabel("Xếp Loại: " + sv.getXepLoai());
             lblRank.setFont(new Font("Arial", Font.BOLD, 18));
-            lblRank.setForeground(new Color(39, 174, 96)); 
+            lblRank.setForeground(new Color(39, 174, 96));
             lblRank.setHorizontalAlignment(SwingConstants.CENTER);
             g.gridy = 9; g.insets = new Insets(5, 20, 20, 20);
             pContent.add(lblRank, g);
 
         } else {
-            pContent.add(new JLabel("Không tìm thấy thông tin sinh viên."), new GridBagConstraints());
+            pContent.add(new JLabel("Không tìm thấy dữ liệu sinh viên!"));
         }
 
         add(pContent, BorderLayout.CENTER);
 
-        
-        JButton btnLogout = new JButton("LOGOUT");
+        // Logout
+        JButton btnLogout = new JButton("ĐĂNG XUẤT");
         btnLogout.setBackground(new Color(149, 165, 166));
-        btnLogout.setForeground(Color.BLACK);
+        btnLogout.setForeground(Color.WHITE);
         btnLogout.setFont(FONT_BOLD);
         btnLogout.setFocusPainted(false);
         btnLogout.addActionListener(e -> {
